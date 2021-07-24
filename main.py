@@ -1,3 +1,4 @@
+import csv
 import datetime
 from pathlib import Path
 
@@ -99,14 +100,40 @@ def parse_dates(text: str) -> datetime.date:
     )
 
 
+def _has_header(file_path: Path) -> bool:
+    with open(file_path, 'r') as csvfile:
+        sniffer = csv.Sniffer()
+        has_header = sniffer.has_header(csvfile.read(2048))
+        csvfile.seek(0)
+
+    return has_header
+
+
+def get_num_rows_in_file(file_path: Path) -> int:
+    """
+
+    Args:
+        file_path:
+
+    Returns:
+
+    """
+    num_rows = sum(1 for _ in open(file_path))
+    return num_rows - 1 if _has_header(file_path) else num_rows
+
+
 def main():
     table_name = 'projects'
     raw_file_path = Path(__file__).parent / 'test_files/test_projects.csv'
+    num_rows = get_num_rows_in_file(raw_file_path)
+    logger.info(f"Rows in raw file: {num_rows}")
     df = import_file(raw_file_path)
 
     filtered_df = filter_out_old_projects(df).copy()
     filtered_df.loc[:, "start_date"] = filtered_df["start_date"].apply(parse_dates)
     filtered_df.loc[:, "end_date"] = filtered_df["end_date"].apply(parse_dates)
+
+    logger.info(f"Rows in filtered DataFrame: {len(filtered_df)}")
 
     csv_file_path = raw_file_path.parent / f"{raw_file_path.stem}_clean{raw_file_path.suffix}"
     filtered_df.to_csv(csv_file_path, index=False)
