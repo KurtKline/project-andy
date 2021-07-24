@@ -8,7 +8,7 @@ from config import db_config
 from db import PostgresDB
 from loguru_setup import get_logger
 
-logger = get_logger(Path(__file__).parent / 'logs/project.log')
+logger = get_logger(Path(__file__).parent / 'logs/run.log')
 
 
 def import_file(path: Path) -> pd.DataFrame:

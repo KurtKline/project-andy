@@ -48,5 +48,5 @@ So in my case it was:
 The website [crontab.guru](https://crontab.guru/) can help you understand the scheduling better.
 
 3. Save the file
-4. Look in the projects `logs` folder to see if anything has happened. There should be files  
-  `db.log` and `main.log` that you can look at. 
+4. Look in the projects `logs` folder to see if anything has happened. There should be a file 
+  `run.log` that you can look at.
