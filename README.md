@@ -32,3 +32,21 @@ docker run --rm -p 5050:5050 thajeztah/pgadmin4
 Go to browser and type in ```localhost:5050```.
 
 Note: You can only access pgAdmin if the pdAdmin docker container is running
+
+## Adding cron job to schedule your script
+
+1. In the Linux terminal, type `crontab -e`. This will open a file 
+where you can add new cron jobs. 
+
+2. Add your cron job in the following format: 
+```
+*/1 * * * * <PATH_TO_PYTHON_IN_VENV> <PATH_TO_SCRIPT>
+
+So in my case it was: 
+*/1 * * * * /home/kurt/Git/ProjectAndy/venv/bin/python /home/kurt/Git/ProjectAndy/main.py
+```
+The website [crontab.guru](https://crontab.guru/) can help you understand the scheduling better.
+
+3. Save the file
+4. Look in the projects `logs` folder to see if anything has happened. There should be files  
+  `db.log` and `main.log` that you can look at. 
