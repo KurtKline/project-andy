@@ -2,10 +2,12 @@ import datetime
 from pathlib import Path
 
 import pandas as pd
-from loguru import logger
 
 from config import db_config
 from db import PostgresDB
+from loguru_setup import get_logger
+
+logger = get_logger(Path(__file__).parent / 'logs/main.log')
 
 
 def import_file(path: Path) -> pd.DataFrame:
@@ -99,7 +101,7 @@ def parse_dates(text: str) -> datetime.date:
 
 def main():
     table_name = 'projects'
-    raw_file_path = Path('test_files/test_projects.csv')
+    raw_file_path = Path(__file__).parent / 'test_files/test_projects.csv'
     df = import_file(raw_file_path)
 
     filtered_df = filter_out_old_projects(df).copy()

@@ -1,7 +1,10 @@
 from pathlib import Path
 
 import psycopg2
-from loguru import logger
+
+from loguru_setup import get_logger
+
+logger = get_logger(Path(__file__).parent / 'logs/db.log')
 
 
 class PostgresDB:
