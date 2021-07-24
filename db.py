@@ -66,7 +66,11 @@ class PostgresDB:
 
                 with open(file_path, 'r') as file:
                     next(file)  # Skips header row
-                    cur.copy_from(file, tmp_table_name, sep=',')
+                    cur.copy_from(
+                        file,
+                        tmp_table_name,
+                        sep=','
+                    )
                     logger.info(f"Rows inserted into {tmp_table_name}: {cur.rowcount}")
 
                 cur.execute(insert_query)

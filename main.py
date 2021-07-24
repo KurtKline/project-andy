@@ -1,8 +1,10 @@
 import csv
-import datetime
+from datetime import datetime
 from pathlib import Path
 
+import pytz
 import pandas as pd
+import pendulum as pendulum
 
 from config import db_config
 from db import PostgresDB
@@ -22,7 +24,16 @@ def import_file(path: Path) -> pd.DataFrame:
         A pd.DataFrame
     """
     try:
-        df = pd.read_csv(path)
+        df = pd.read_csv(
+            path,
+            parse_dates=["start_date", "end_date"],
+            dtype={
+                "project_id": int,
+                "project_name": str,
+                "site_id": int,
+                "client_id": int
+            }
+        )
 
     except FileNotFoundError as e:
         logger.info(f"Error: {e}")
@@ -81,23 +92,23 @@ def remove_file(file_path: Path) -> None:
     file_path.unlink(missing_ok=True)
 
 
-def parse_dates(text: str) -> datetime.date:
-    """
-    Converts date column text values into
-    datetime.date objects.
-
-    Args:
-        text:
-
-    Returns:
-        datetime.date objects
-    """
-    parts = text.split('-')
-    return datetime.date(
-        int(parts[0]),
-        int(parts[1]),
-        int(parts[2])
-    )
+# def parse_dates(text: str) -> datetime.date:
+#     """
+#     Converts date column text values into
+#     datetime.date objects.
+#
+#     Args:
+#         text:
+#
+#     Returns:
+#         datetime.date objects
+#     """
+#     parts = text.split('-')
+#     return datetime.date(
+#         int(parts[0]),
+#         int(parts[1]),
+#         int(parts[2])
+#     )
 
 
 def _has_header(file_path: Path) -> bool:
@@ -122,6 +133,11 @@ def get_num_rows_in_file(file_path: Path) -> int:
     return num_rows - 1 if _has_header(file_path) else num_rows
 
 
+def add_timestamp_column(df: pd.DataFrame) -> pd.DataFrame:
+    df.loc[:, "timestamp"] = datetime.now(tz=pytz.timezone('America/Los_Angeles'))
+    return df
+
+
 def main():
     table_name = 'projects'
     raw_file_path = Path(__file__).parent / 'test_files/test_projects.csv'
@@ -130,8 +146,7 @@ def main():
     df = import_file(raw_file_path)
 
     filtered_df = filter_out_old_projects(df).copy()
-    filtered_df.loc[:, "start_date"] = filtered_df["start_date"].apply(parse_dates)
-    filtered_df.loc[:, "end_date"] = filtered_df["end_date"].apply(parse_dates)
+    filtered_df = add_timestamp_column(filtered_df)
 
     logger.info(f"Rows in filtered DataFrame: {len(filtered_df)}")
 
