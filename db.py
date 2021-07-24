@@ -5,7 +5,14 @@ from loguru import logger
 
 
 class PostgresDB:
-    def __init__(self, database, user, password, host, port):
+    def __init__(
+            self,
+            database: str,
+            user: str,
+            password: str,
+            host: str,
+            port: int
+    ):
         self.conn = psycopg2.connect(
             database=database,
             user=user,
