@@ -13,7 +13,7 @@ from db import PostgresDB
 
 class FileProcessor:
     def __init__(self):
-        self.raw_file_path_template = Path(__file__).parent / 'test_files'
+        self.raw_file_path_template = Path(__file__).parent.parent / 'data'
 
     @staticmethod
     def add_timestamp_column(df: pd.DataFrame) -> pd.DataFrame:
