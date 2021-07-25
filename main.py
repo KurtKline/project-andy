@@ -2,9 +2,8 @@ import csv
 from datetime import datetime
 from pathlib import Path
 
-import pytz
 import pandas as pd
-import pendulum as pendulum
+import pytz
 
 from config import db_config
 from db import PostgresDB
@@ -90,25 +89,6 @@ def remove_file(file_path: Path) -> None:
     """
     logger.info(f"Removing file: {file_path}")
     file_path.unlink(missing_ok=True)
-
-
-# def parse_dates(text: str) -> datetime.date:
-#     """
-#     Converts date column text values into
-#     datetime.date objects.
-#
-#     Args:
-#         text:
-#
-#     Returns:
-#         datetime.date objects
-#     """
-#     parts = text.split('-')
-#     return datetime.date(
-#         int(parts[0]),
-#         int(parts[1]),
-#         int(parts[2])
-#     )
 
 
 def _has_header(file_path: Path) -> bool:
